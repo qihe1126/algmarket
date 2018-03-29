@@ -1,14 +1,14 @@
-Algorithmia Common Library (python)
+Algmarket Common Library (python)
 ===================================
 
-Python client library for accessing the Algorithmia API
-For API documentation, see the [PythonDocs](https://algorithmia.com/docs/lang/python)
+Python client library for accessing the Algmarket API
+For API documentation, see the [PythonDocs](https://algmarket.com/docs/lang/python)
 
 [![PyPI](https://img.shields.io/pypi/v/algorithmia.svg?maxAge=2592000)]()
 
 ## Install from PyPi
 
-The official Algorithmia python client is [available on PyPi](https://pypi.python.org/pypi/algorithmia).
+The official Algmarket python client is [available on PyPi](https://pypi.python.org/pypi/algmarket).
 Install it with pip:
 
 ```bash
@@ -17,7 +17,7 @@ pip install algorithmia
 
 ## Install from source
 
-Build algorithmia client wheel:
+Build algmarket client wheel:
 
 ```bash
 python setup.py bdist_wheel
@@ -26,7 +26,7 @@ python setup.py bdist_wheel
 Install a wheel manually:
 
 ```bash
-pip install --user --upgrade dist/algorithmia-*.whl
+pip install --user --upgrade dist/algmarket-*.whl
 ```
 
 ## Authentication
@@ -34,10 +34,10 @@ pip install --user --upgrade dist/algorithmia-*.whl
 First, create an Algorithmia client and authenticate with your API key:
 
 ```python
-import Algorithmia
+import Algmarket
 
 apiKey = '{{Your API key here}}'
-client = Algorithmia.client(apiKey)
+client = Algmarket.client(apiKey)
 ```
 
 Now you're ready to call algorithms. 
@@ -55,10 +55,9 @@ Call an algorithm with text input by simply passing a string into its `pipe` met
 If the algorithm output is text, then the `result` field of the response will be a string.
 
 ```python
-algo = client.algo('demo/Hello/0.1.1')
-response = algo.pipe("HAL 9000")
+algo = client.algm('demo/Hello/0.1.1')
+response = algo.call("HAL 9000")
 print response.result    # Hello, world!
-print response.metadata  # Metadata(content_type='text',duration=0.0002127)
 print response.metadata.duration # 0.0002127
 ```
 
@@ -70,8 +69,8 @@ For algorithms that return JSON, the `result` field of the response will be the 
 deserialized type.
 
 ```python
-algo = client.algo('WebPredict/ListAnagrams/0.1.0')
-result = algo.pipe(["transformer", "terraforms", "retransform"]).result
+algo = client.algm('WebPredict/ListAnagrams/0.1.0')
+result = algo.call(["transformer", "terraforms", "retransform"]).result
 # -> ["transformer","retransform"]
 ```
 
@@ -83,7 +82,7 @@ will be a byte array.
 
 ```python
 input = bytearray(open("/path/to/bender.png", "rb").read())
-result = client.algo("opencv/SmartThumbnail/0.1").pipe(input).result
+result = client.algm("opencv/SmartThumbnail/0.1").call(input).result
 # -> [binary byte sequence]
 ```
 
@@ -92,22 +91,9 @@ result = client.algo("opencv/SmartThumbnail/0.1").pipe(input).result
 API errors and Algorithm exceptions will result in calls to `pipe` throwing an `AlgoException`:
 
 ```python
-client.algo('util/whoopsWrongAlgo').pipe('Hello, world!')  
+client.algo('util/whoopsWrongAlgo').call('Hello, world!')  
 # Algorithmia.algo_response.AlgoException: algorithm algo://util/whoopsWrongAlgo not found
 ```
-
-### Request options
-
-The client exposes options that can configure algorithm requests.
-This includes support for changing the timeout or indicating that the API should include stdout in the response.
-
-```python
-from Algorithmia.algorithm import OutputType
-response = client.algo('util/echo').set_options(timeout=60, stdout=False)
-print response.metadata.stdout
-```
-
-Note: `stdout=True` is only supported if you have access to the algorithm source.
 
 
 ## Working with data
@@ -119,7 +105,6 @@ Create directories by instantiating a `DataDirectory` object and calling `create
 
 ```python
 client.dir("data://.my/foo").create()
-client.dir("dropbox://somefolder").create()
 ```
 
 ### Upload files to a directory
@@ -181,52 +166,12 @@ for file in foo.dirs():
 for entry in foo.list():
     print entry.path " at URL: " + entry.url
 ```
-
-### Manage directory permissions
-
-Directory permissions may be set when creating a directory, or may be updated on already existing directories.
-
-```python
-from Algorithmia.acl import ReadAcl, AclType
-foo = client.dir("data://.my/foo")
-# ReadAcl.public is a wrapper for Acl(AclType.public) to make things easier
-foo.create(ReadAcl.public)   
-
-acl = foo.get_permissions()  # Acl object
-acl.read_acl == AclType.public  # True
-
-foo.update_permissions(ReadAcl.private)
-foo.get_permissions().read_acl == AclType.private # True
-```
-
-## Upgrading from 0.9.x
-
-The main backwards incompatibility between 0.9.x and 1.0.0 is the result of an algorithm call.
-In 0.9.x the result of an algorithm call is just the algorithm's output (which is not the full spec returned by the API)
-
-```python
-result = client.algo('util/echo').pipe('Hello, world!')
-print result   # Hello, world!
-```
-
-In 1.0.x the result of an algorithm matches the API specification.  The algorithm's output is nested in an attribute 'result', and metadata can be accessed via the 'metadata' attribute.
-
-```python
-result = client.algo('util/echo').pipe('Hello, world!')
-print result.result     # Hello, world!
-print result.metadata   # content_type, duration etc
-```
-
-Aside from that you should be able to drop in the newest version of the client.  Another advantage of using the newest client is full access to the entire Data API specification.
-
 ## Running tests
 
 ```bash
 export ALGORITHMIA_API_KEY={{Your API key here}}
 cd Test
-python acl_test.py
-python algo_test.py
+python algm_test.py
 python datadirectorytest.py
-python datafile_test.py
-python utiltest.py
+python modeldirectorytest.py
 ```

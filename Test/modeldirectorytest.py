@@ -13,7 +13,7 @@ class DataDirectoryTest(unittest.TestCase):
         self.client = Algmarket.client()
 
     def test_get_name(self):
-        dir = ModelDirectory(self.client, 'model://.my/test_dir')
+        dir = ModelDirectory(self.client, 'model://.my/model_dir')
         if (dir.exists()):
             dir.delete(True)
         dir.create()

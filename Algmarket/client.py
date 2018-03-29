@@ -4,6 +4,8 @@ import Algmarket
 from Algmarket.algorithm import Algorithm
 from Algmarket.datafile import DataFile
 from Algmarket.datadirectory import DataDirectory
+from Algmarket.modelfile import ModelFile
+from Algmarket.modeldirectory import ModelDirectory
 
 import json, re, requests, six
 import os
@@ -27,11 +29,17 @@ class Client(object):
     def algm(self, algmRef):
         return Algorithm(self, algmRef)
 
-    def file(self, dataUrl):
+    def dataFile(self, dataUrl):
         return DataFile(self, dataUrl)
 
-    def dir(self, dataUrl):
+    def dataDir(self, dataUrl):
         return DataDirectory(self, dataUrl)
+
+    def modelFile(self, modelUrl):
+        return ModelFile(self, modelUrl)
+
+    def modelDir(self, modelUrl):
+        return ModelDirectory(self, modelUrl)
 
     # Used internally to post json to the api and parse json response
     def postJsonHelper(self, url, input_object, parse_response_as_json=True, **query_parameters):

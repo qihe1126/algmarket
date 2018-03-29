@@ -9,8 +9,8 @@ setup(
     long_description='Algmarket Python Client is a client library for accessing Algorithmia from python code. This library also gets bundled with any Python algorithms in Algmarket.',
     url='https://github.com/qihe1126/algmarket-python',
     license='MIT',
-    author='Algmarket',
-    author_email='qihe1126@gmail.com',
+    author='qihe',
+    author_email='qihea163@163.com',
     packages=['Algmarket'],
     install_requires=[
         'requests',
